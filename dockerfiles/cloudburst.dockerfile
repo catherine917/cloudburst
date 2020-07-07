@@ -26,7 +26,7 @@ USER root
 # none are specified, we use hydro-project/cloudburst by default. Install the KVS
 # client from the Anna project.
 WORKDIR $HYDRO_HOME/cloudburst
-RUN git remote remove origin && git remote add origin https://github.com/$repo_org/cloudburst
+RUN git remote remove origin && git remote add origin https://github.com/catherine917/cloudburst.git
 RUN git fetch -p origin && git checkout -b $build_branch origin/$source_branch
 RUN rm -rf /usr/lib/python3/dist-packages/yaml
 RUN rm -rf /usr/lib/python3/dist-packages/PyYAML-*
@@ -40,13 +40,13 @@ WORKDIR /
 
 # These installations are currently pipeline specific until we figure out a
 # better way to do package management for Python.
-RUN pip3 install tensorflow==1.12.0 tensorboard==1.12.2 scikit-image
+# RUN pip3 install tensorflow==1.12.0 tensorboard==1.12.2 scikit-image
 
 COPY start-cloudburst.sh /start-cloudburst.sh
 
-RUN pip3 install pandas s3fs 
+# RUN pip3 install pandas s3fs 
 
-RUN touch a
-RUN pip3 install --upgrade git+https://github.com/devin-petersohn/modin@engines/cloudburst_init
+# RUN touch a
+# RUN pip3 install --upgrade git+https://github.com/devin-petersohn/modin@engines/cloudburst_init
 
 CMD bash start-cloudburst.sh
