@@ -49,7 +49,7 @@ python3.6 setup.py install
 
 cd $HYDRO_HOME/cloudburst
 if [[ -z "$REPO_ORG" ]]; then
-  REPO_ORG="hydro-project"
+  REPO_ORG="catherine917"
 fi
 
 if [[ -z "$REPO_BRANCH" ]]; then
@@ -57,7 +57,7 @@ if [[ -z "$REPO_BRANCH" ]]; then
 fi
 
 git remote remove origin
-git remote add origin https://github.com/$REPO_ORG/cloudburst
+git remote add origin https://github.com/catherine917/cloudburst
 while !(git fetch -p origin); do
    echo "git fetch failed, retrying..."
 done
@@ -95,6 +95,7 @@ if [[ "$ROLE" = "executor" ]]; then
 elif [[ "$ROLE" = "scheduler" ]]; then
   echo "scheduler:" >> conf/cloudburst-config.yml
   echo "    routing_address: $ROUTE_ADDR" >> conf/cloudburst-config.yml
+  echo "    policy: random" >> conf/cloudburst-config.yml
 
   python3.6 cloudburst/server/scheduler/server.py
 elif [[ "$ROLE" = "benchmark" ]]; then

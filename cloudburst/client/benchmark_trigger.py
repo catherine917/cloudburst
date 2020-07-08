@@ -71,6 +71,7 @@ while end_recv < sent_msgs:
     if b'END' in msg:
         end_recv += 1
     else:
+        print(msg)
         msg = cp.loads(msg)
 
         if type(msg) == tuple:
