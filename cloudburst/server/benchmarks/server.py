@@ -26,7 +26,7 @@ from cloudburst.server.benchmarks import (
     predserving,
     scaling,
     utils,
-    anna
+    test_anna
 )
 import cloudburst.server.utils as sutils
 
@@ -84,7 +84,7 @@ def run_bench(bname, num_requests, cloudburst, kvs, sckt, create=False):
         total, scheduler, kvs, retries = scaling.run(cloudburst, num_requests,
                                                      sckt, create)
     elif bname == 'anna':
-        total, scheduler, kvs, retries = anna.run(bname, num_requests,sckt)
+        total, scheduler, kvs, retries = test_anna.run(bname, num_requests,sckt)
     else:
         logging.info('Unknown benchmark type: %s!' % (bname))
         sckt.send(b'END')

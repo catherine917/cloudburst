@@ -16,8 +16,8 @@ import sys
 import time
 import uuid
 
-from anna.lattices import LWWPairLattice
-from anna.client import AnnaTcpClient
+# from anna.lattices import LWWPairLattice
+# from anna.client import AnnaTcpClient
 import cloudpickle as cp
 import numpy as np
 
