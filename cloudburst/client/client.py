@@ -330,8 +330,8 @@ class CloudburstConnection():
 
     def _connect(self):
         sckt = self.context.socket(zmq.REQ)
-        sckt.setsockopt(zmq.RCVTIMEO, 1000)
-        print(self.service_addr)
+        sckt.setsockopt(zmq.RCVTIMEO, 10000)
+        print(self.service_addr % CONNECT_PORT)
         sckt.connect(self.service_addr % CONNECT_PORT)
         sckt.send_string('')
 
