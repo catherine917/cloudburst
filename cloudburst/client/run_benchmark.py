@@ -79,6 +79,11 @@ elif bname == 'scaling':
 elif bname == 'anna':
     total, scheduler, kvs, retries = test_anna.run(cloudburst_client, num_requests,
                                                  None)
+    ops = num_requests*2
+    time = sum(total)
+    print('Total operations: %d' % (ops))
+    print('Total computation time: %.4f' % (time))
+    print('Thoughtput(ops/s): %.4f' % (ops / time))
 else:
     print('Unknown benchmark type: %s!' % (bname))
 

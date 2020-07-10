@@ -28,6 +28,7 @@ def run(cloudburst_client, num_requests, sckt):
    
     # Create all the input data
     sample = np.random.zipf(2, num_requests)
+    total_time = []
     for i in range(num_requests):
         key = str(sample[i])
         val = "a";
@@ -38,6 +39,7 @@ def run(cloudburst_client, num_requests, sckt):
         end = time.time()
         total_time += [end - start]
     if sckt:
+        print(total_time)
+        print(cp.dumps(total_time))
         sckt.send(cp.dumps(total_time))
-
     return total_time, [], [], 0
