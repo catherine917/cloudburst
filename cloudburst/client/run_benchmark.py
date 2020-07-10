@@ -28,7 +28,8 @@ from cloudburst.server.benchmarks import (
     predserving,
     scaling,
     summa,
-    utils
+    utils,
+    test_anna
 )
 
 
@@ -74,6 +75,9 @@ elif bname == 'summa':
                                                None)
 elif bname == 'scaling':
     total, scheduler, kvs, retries = scaling.run(cloudburst_client, num_requests,
+                                                 None)
+elif bname == 'anna':
+    total, scheduler, kvs, retries = test_anna.run(cloudburst_client, num_requests,
                                                  None)
 else:
     print('Unknown benchmark type: %s!' % (bname))
