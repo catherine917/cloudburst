@@ -29,7 +29,7 @@ def run(cloudburst_client, num_requests, sckt):
     # Create all the input data
     sample = np.random.zipf(2, num_requests)
     for i in range(num_requests):
-        key = sample[i]
+        key = str(sample[i])
         val = "a";
         arr = val.ljust(1024, 'a')
         start = time.time()
