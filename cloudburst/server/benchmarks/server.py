@@ -47,7 +47,6 @@ def ranstr(num):
 
 def benchmark(ip, routing_address, tid):
     kvs = AnnaTcpClient(routing_address, ip, tid)
-    sample = np.random.zipf(2, num_requests)
     
     ctx = zmq.Context(1)
 
