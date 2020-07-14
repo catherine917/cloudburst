@@ -43,7 +43,7 @@ sent_msgs = 0
 
 if 'create' in msg:
     sckt = ctx.socket(zmq.PUSH)
-    sckt.connect('tcp://' + ips[0] + ':3000')
+    sckt.connect('tcp://' + ips[0] + ':3001')
 
     sckt.send_string(msg)
     sent_msgs += 1
@@ -51,7 +51,7 @@ else:
     for ip in ips:
         for tid in range(NUM_THREADS):
             sckt = ctx.socket(zmq.PUSH)
-            sckt.connect('tcp://' + ip + ':' + str(3000 + tid))
+            sckt.connect('tcp://' + ip + ':' + str(3001 + tid))
 
             sckt.send_string(msg)
             sent_msgs += 1

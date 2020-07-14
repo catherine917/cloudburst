@@ -46,6 +46,7 @@ def benchmark(ip, cloudburst_address, tid):
 
     while True:
         msg = benchmark_start_socket.recv_string()
+        logging.info('Receive message: %s' % (msg))
         splits = msg.split(':')
 
         resp_addr = splits[0]
