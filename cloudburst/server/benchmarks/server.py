@@ -45,7 +45,7 @@ def ranstr(num):
 
     return salt
 
-def benchmark(ip, routing_address, tid, num_requests):
+def benchmark(ip, routing_address, tid):
     kvs = AnnaTcpClient(routing_address, ip, tid)
     sample = np.random.zipf(2, num_requests)
     
