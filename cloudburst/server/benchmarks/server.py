@@ -46,7 +46,7 @@ def ranstr(num):
     return salt
 
 def benchmark(ip, routing_address, tid):
-    kvs = AnnaTcpClient(routing_address, ip, tid)
+    kvs = AnnaTcpClient(routing_address, ip, local=False, offset=tid + 10)
     
     ctx = zmq.Context(1)
 
