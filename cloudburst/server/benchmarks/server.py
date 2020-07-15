@@ -57,13 +57,13 @@ def benchmark(ip, routing_address, tid):
     while True:
         msg = benchmark_start_socket.recv_string()
         logging.info('Receive message: %s' % (msg))
-        # splits = msg.split(':')
+        splits = msg.split(':')
 
-        # resp_addr = splits[0]
-        num_requests = int(msg)
+        resp_addr = splits[0]
+        num_requests = int(splits[1])
 
-        # sckt = ctx.socket(zmq.PUSH)
-        # sckt.connect('tcp://' + resp_addr + ':3000')
+        sckt = ctx.socket(zmq.PUSH)
+        sckt.connect('tcp://' + resp_addr + ':3000')
         sample = np.random.zipf(2, num_requests)
         total_time = []
         for i in range(num_requests):
@@ -75,6 +75,7 @@ def benchmark(ip, routing_address, tid):
             end = time.time()
             total_time += [end - start]
         new_total = cp.dumps(total_time)
+        sckt.send(new_total);
         thruput = num_requests * 2 / new_total
         logging.info('\n\n*** EPOCH %.2f ***' % (new_total))
         logging.info('\tTHROUGHPUT: %.2f' % (thruput))
