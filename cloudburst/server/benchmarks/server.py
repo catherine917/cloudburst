@@ -51,7 +51,6 @@ def benchmark(ip, routing_address, tid):
     ctx = zmq.Context(1)
 
     benchmark_start_socket = ctx.socket(zmq.PULL)
-    logging.log(tid)
     benchmark_start_socket.bind('tcp://*:' + str(BENCHMARK_START_PORT + tid))
     # kvs = cloudburst.kvs_client
     
@@ -78,7 +77,7 @@ def benchmark(ip, routing_address, tid):
             total_time += [end - start]
         new_total = cp.dumps(total_time)
         sckt.send(new_total);
-        print("Finsh sending requests")
+        logging.info("Finsh sending requests")
 
 
 # def run_bench(bname, num_requests, cloudburst, kvs, sckt, create=False):

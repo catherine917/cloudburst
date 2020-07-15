@@ -24,7 +24,7 @@ from cloudburst.server.benchmarks import utils
 logging.basicConfig(filename='log_trigger.txt', level=logging.INFO,
                     format='%(asctime)s %(message)s')
 
-NUM_THREADS = 1
+NUM_THREADS = 4
 
 ips = []
 with open('bench_ips.txt', 'r') as f:
@@ -84,15 +84,15 @@ while end_recv < sent_msgs:
         epoch_total += new_tot
         total += new_tot
         epoch_recv += 1
-        print(epoch_thruput)
+        print(sent_msgs)
         if epoch_recv == sent_msgs:
             epoch_end = time.time()
             elapsed = epoch_end - epoch_start
-            thruput = num_requests * sent_msgs * 2 / sum(epoch_total)
+            thruput = num_requests * epoch * 2 / sum(epoch_total)
 
             logging.info('\n\n*** EPOCH %d ***' % (epoch))
-            logging.info('\tTHROUGHPUT: %.2f' % (thruput))
-            # utils.print_latency_stats(epoch_total, 'E2E', True)
+            logging.info('\tTHROUGHPUT(ops/sec): %.2f' % (thruput))
+            utils.print_latency_stats(epoch_total, 'E2E', True)
 
             epoch_recv = 0
             epoch_thruput = 0
