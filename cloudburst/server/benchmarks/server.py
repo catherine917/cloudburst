@@ -24,6 +24,7 @@ import zmq
 
 # from cloudburst.client.client import CloudburstConnection
 from anna.client import AnnaTcpClient
+from anna.lattices import LWWPairLattice
 # from cloudburst.server.benchmarks import (
 #     composition,
 #     locality,
@@ -36,14 +37,13 @@ from anna.client import AnnaTcpClient
 # )
 import cloudburst.server.utils as sutils
 
-BENCHMARK_START_PORT = 2000
+BENCHMARK_START_PORT = 3000
 
 logging.basicConfig(filename='log_benchmark.txt', level=logging.INFO,
                     format='%(asctime)s %(message)s')
-def ranstr(num):
-    salt = ''.join(random.sample(string.ascii_letters + string.digits, num))
-
-    return salt
+def str_generator(n):
+    chars = string.ascii_letters + string.digits
+    return "".join(random.choice(chars) for _ in range(n))
 
 def benchmark(ip, routing_address, tid):
     kvs = AnnaTcpClient(routing_address, ip, local=False, offset=tid + 10)
@@ -51,6 +51,7 @@ def benchmark(ip, routing_address, tid):
     ctx = zmq.Context(1)
 
     benchmark_start_socket = ctx.socket(zmq.PULL)
+    logging.log(tid)
     benchmark_start_socket.bind('tcp://*:' + str(BENCHMARK_START_PORT + tid))
     # kvs = cloudburst.kvs_client
     
@@ -68,19 +69,16 @@ def benchmark(ip, routing_address, tid):
         total_time = []
         for i in range(num_requests):
             key = str(sample[i])
-            arr = ranstr(1024)
+            arr = str_generator(1024)
+            lattice = LWWPairLattice(0, arr.encode())
             start = time.time()
-            kvs.put(key, arr)
+            kvs.put(key, lattice)
             kvs.get(key)
             end = time.time()
             total_time += [end - start]
         new_total = cp.dumps(total_time)
         sckt.send(new_total);
-        thruput = num_requests * 2 / new_total
-        logging.info('\n\n*** EPOCH %.2f ***' % (new_total))
-        logging.info('\tTHROUGHPUT: %.2f' % (thruput))
-        print(new_total)
-        print(thruput)
+        print("Finsh sending requests")
 
 
 # def run_bench(bname, num_requests, cloudburst, kvs, sckt, create=False):

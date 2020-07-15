@@ -24,7 +24,7 @@ from cloudburst.server.benchmarks import utils
 logging.basicConfig(filename='log_trigger.txt', level=logging.INFO,
                     format='%(asctime)s %(message)s')
 
-NUM_THREADS = 4
+NUM_THREADS = 1
 
 ips = []
 with open('bench_ips.txt', 'r') as f:
@@ -34,6 +34,8 @@ with open('bench_ips.txt', 'r') as f:
         line = f.readline()
 
 msg = sys.argv[1]
+splits = msg.split(':')
+num_requests = int(splits[1])
 ctx = zmq.Context(1)
 
 recv_socket = ctx.socket(zmq.PULL)
@@ -71,9 +73,8 @@ while end_recv < sent_msgs:
     if b'END' in msg:
         end_recv += 1
     else:
-        print(msg)
         msg = cp.loads(msg)
-
+        print(msg)
         if type(msg) == tuple:
             epoch_thruput += msg[0]
             new_tot = msg[1]
@@ -83,15 +84,15 @@ while end_recv < sent_msgs:
         epoch_total += new_tot
         total += new_tot
         epoch_recv += 1
-
+        print(epoch_thruput)
         if epoch_recv == sent_msgs:
             epoch_end = time.time()
             elapsed = epoch_end - epoch_start
-            thruput = epoch_thruput / elapsed
+            thruput = num_requests * sent_msgs * 2 / sum(epoch_total)
 
             logging.info('\n\n*** EPOCH %d ***' % (epoch))
             logging.info('\tTHROUGHPUT: %.2f' % (thruput))
-            utils.print_latency_stats(epoch_total, 'E2E', True)
+            # utils.print_latency_stats(epoch_total, 'E2E', True)
 
             epoch_recv = 0
             epoch_thruput = 0
