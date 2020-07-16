@@ -50,11 +50,12 @@ if 'create' in msg:
     sckt.send_string(msg)
     sent_msgs += 1
 else:
+    print("start")
     for ip in ips:
         for tid in range(NUM_THREADS):
             sckt = ctx.socket(zmq.PUSH)
             sckt.connect('tcp://' + ip + ':' + str(3000 + tid))
-
+            
             sckt.send_string(msg)
             sent_msgs += 1
 
@@ -74,7 +75,6 @@ while end_recv < sent_msgs:
         end_recv += 1
     else:
         msg = cp.loads(msg)
-        print(msg)
         if type(msg) == tuple:
             epoch_thruput += msg[0]
             new_tot = msg[1]
@@ -88,12 +88,14 @@ while end_recv < sent_msgs:
         if epoch_recv == sent_msgs:
             epoch_end = time.time()
             elapsed = epoch_end - epoch_start
-            thruput = num_requests * epoch * 2 / sum(epoch_total)
+            size = len(epoch_total) * 2
+            thruput = size / sum(epoch_total)
 
             logging.info('\n\n*** EPOCH %d ***' % (epoch))
-            logging.info('\tTHROUGHPUT(ops/sec): %.2f' % (thruput))
-            utils.print_latency_stats(epoch_total, 'E2E', True)
-
+            logging.info(' Sample size:%d\n' % size)
+            logging.info(' Thoughput(ops/sec): %.2f' % (thruput))
+            # utils.print_latency_stats(epoch_total, 'E2E', True, sum(epoch_total))
+            print("Finish")
             epoch_recv = 0
             epoch_thruput = 0
             epoch_total.clear()
