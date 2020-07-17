@@ -56,6 +56,7 @@ def benchmark(ip, routing_address, tid):
     
     while True:
         msg = benchmark_start_socket.recv_string()
+        print(msg)
         logging.info('Receive message: %s' % (msg))
         splits = msg.split(':')
 
