@@ -52,6 +52,7 @@ def benchmark(ip, routing_address, tid):
 
     benchmark_start_socket = ctx.socket(zmq.PULL)
     benchmark_start_socket.bind('tcp://*:' + str(BENCHMARK_START_PORT + tid))
+    print(str(BENCHMARK_START_PORT + tid))
     # kvs = cloudburst.kvs_client
     
     while True:
@@ -68,8 +69,8 @@ def benchmark(ip, routing_address, tid):
         sample = np.random.zipf(2, num_requests)
         total_time = []
         for i in range(num_requests):
-            key = str(sample[i])
-            arr = str_generator(1024)
+            key = str(sample[i]).zfill(8)
+            arr = str_generator(256*1024)
             lattice = LWWPairLattice(0, arr.encode())
             start = time.time()
             kvs.put(key, lattice)
