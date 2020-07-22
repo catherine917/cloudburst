@@ -57,7 +57,6 @@ def benchmark(ip, routing_address, tid):
     
     while True:
         msg = benchmark_start_socket.recv_string()
-        print(msg)
         logging.info('Receive message: %s' % (msg))
         splits = msg.split(':')
 
@@ -73,10 +72,12 @@ def benchmark(ip, routing_address, tid):
             # key = str(sample[i])
             arr = str_generator(256*1024)
             lattice = LWWPairLattice(0, arr.encode())
+            logging.info("Start anna kvs")
             start = time.time()
             kvs.put(key, lattice)
             kvs.get(key)
             end = time.time()
+            logging.info("Finish anna kvs")
             total_time += [end - start]
         new_total = cp.dumps(total_time)
         sckt.send(new_total);
