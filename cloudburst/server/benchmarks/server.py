@@ -74,8 +74,10 @@ def benchmark(ip, routing_address, tid):
             lattice = LWWPairLattice(0, arr.encode())
             logging.info("Start anna kvs")
             start = time.time()
-            kvs.put(key, lattice)
-            kvs.get(key)
+            put_res = kvs.put(key, lattice)
+            logging.info('Put result: %s' % (put_res))
+            get_res = kvs.get(key)
+            logging.info('Get result: %s' % (get_res))
             end = time.time()
             logging.info("Finish anna kvs")
             total_time += [end - start]
