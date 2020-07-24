@@ -75,10 +75,12 @@ def benchmark(ip, routing_address, tid):
             logging.info("Start anna kvs")
             start = time.time()
             put_res = kvs.put(key, lattice)
-            logging.info('Put result: %s' % (put_res))
+            # logging.info('Put result: %s' % (put_res))
             get_res = kvs.get(key)
-            logging.info('Get result: %s' % (get_res))
+            # logging.info('Get result: %s' % (get_res))
             end = time.time()
+            if put_res[key] == False:
+                logging.info("PUT Error")
             logging.info("Finish anna kvs")
             total_time += [end - start]
         new_total = cp.dumps(total_time)
