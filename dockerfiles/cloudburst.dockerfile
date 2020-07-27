@@ -33,7 +33,7 @@ RUN rm -rf /usr/lib/python3/dist-packages/PyYAML-*
 RUN pip3 install -r requirements.txt
 WORKDIR $HYDRO_HOME
 RUN rm -rf anna
-RUN git clone --recurse-submodules https://github.com/hydro-project/anna
+RUN git clone --recurse-submodules https://github.com/catherine917/anna
 WORKDIR anna
 RUN cd client/python && python3.6 setup.py install
 WORKDIR /
