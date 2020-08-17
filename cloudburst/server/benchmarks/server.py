@@ -66,18 +66,22 @@ def benchmark(ip, routing_address, tid):
         sckt.connect('tcp://' + resp_addr + ':3000')
         sample = np.random.zipf(2, num_requests)
         total_time = []
+        start = time.time()
         for i in range(num_requests):
             key = str(sample[i])
             arr = str_generator(1024)
             lattice = LWWPairLattice(0, arr.encode())
-            start = time.time()
+            # start = time.time()
             kvs.put(key, lattice)
             kvs.get(key)
-            end = time.time()
-            total_time += [end - start]
-        new_total = cp.dumps(total_time)
-        sckt.send(new_total);
-        logging.info("Finsh sending requests")
+            # end = time.time()
+            # total_time += [end - start]
+        end = time.time()
+        thruput = num_requests * 2 / (end - start)
+        # new_total = cp.dumps(total_time)
+        # sckt.send(new_total);
+        logging.info(' Throughput(ops/sec): %.2f' % (thruput))
+        # logging.info("Finsh sending requests")
 
 
 # def run_bench(bname, num_requests, cloudburst, kvs, sckt, create=False):

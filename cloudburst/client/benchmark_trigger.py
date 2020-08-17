@@ -36,7 +36,7 @@ with open('bench_ips.txt', 'r') as f:
 msg = sys.argv[1]
 splits = msg.split(':')
 num_requests = int(splits[1])
-ctx = zmq.Context(1)
+ctx = zmq.Context()
 
 recv_socket = ctx.socket(zmq.PULL)
 recv_socket.bind('tcp://*:3000')
@@ -45,7 +45,7 @@ sent_msgs = 0
 
 if 'create' in msg:
     sckt = ctx.socket(zmq.PUSH)
-    sckt.connect('tcp://' + ips[0] + ':3001')
+    sckt.connect('tcp://' + ips[0] + ':3000')
 
     sckt.send_string(msg)
     sent_msgs += 1
@@ -54,10 +54,20 @@ else:
     for ip in ips:
         for tid in range(NUM_THREADS):
             sckt = ctx.socket(zmq.PUSH)
+            print(str(3000 + tid))
+            print('tcp://' + ip + ':' + str(3000 + tid))
             sckt.connect('tcp://' + ip + ':' + str(3000 + tid))
-            
+            # sckt.bind('tcp://*:' + str(3005 + tid))
+            # receive = ctx.socket(zmq.PULL)
+            # receive.connect('tcp://localhost:' + str(3005 + tid))
+            # sender = ctx.socket(zmq.PUSH)
+            # sender.connect('tcp://' + ip + ':' + str(3005 + tid))
+            # sender.send(msg)
             sckt.send_string(msg)
             sent_msgs += 1
+        print(ip)
+    print(sent_msgs)
+
 
 epoch_total = []
 total = []
@@ -70,7 +80,6 @@ epoch_start = time.time()
 
 while end_recv < sent_msgs:
     msg = recv_socket.recv()
-
     if b'END' in msg:
         end_recv += 1
     else:
@@ -92,8 +101,8 @@ while end_recv < sent_msgs:
             thruput = size / sum(epoch_total)
 
             logging.info('\n\n*** EPOCH %d ***' % (epoch))
-            logging.info(' Sample size:%d\n' % size)
-            logging.info(' Thoughput(ops/sec): %.2f' % (thruput))
+            logging.info(' Operation counts:%d\n' % size)
+            logging.info(' Throughput(ops/sec): %.2f' % (thruput))
             # utils.print_latency_stats(epoch_total, 'E2E', True, sum(epoch_total))
             print("Finish")
             epoch_recv = 0
