@@ -52,6 +52,7 @@ def benchmark(ip, routing_address, tid):
 
     benchmark_start_socket = ctx.socket(zmq.PULL)
     benchmark_start_socket.bind('tcp://*:' + str(BENCHMARK_START_PORT + tid))
+    print(str(BENCHMARK_START_PORT + tid))
     # kvs = cloudburst.kvs_client
     
     while True:
@@ -68,20 +69,26 @@ def benchmark(ip, routing_address, tid):
         total_time = []
         start = time.time()
         for i in range(num_requests):
-            key = str(sample[i])
-            arr = str_generator(1024)
+            key = str(sample[i]).zfill(8)
+            # key = str(sample[i])
+            arr = str_generator(256*1024)
             lattice = LWWPairLattice(0, arr.encode())
-            # start = time.time()
-            kvs.put(key, lattice)
-            kvs.get(key)
-            # end = time.time()
-            # total_time += [end - start]
-        end = time.time()
-        thruput = num_requests * 2 / (end - start)
+            logging.info("Start anna kvs")
+            start = time.time()
+            put_res = kvs.put(key, lattice)
+            get_res = kvs.get(key)
+            end = time.time()
+            if put_res[key] != 0:
+                logging.info('PUT Error: %d' % (put_res[key]))
+                logging.info('GET Error: %s' % (get_res))
+            logging.info("Finish anna kvs")
+            total_time += [end - start]
+        time = sum(total_time)
+        thruput = num_requests * 2 / sum(epoch_total)
+        logging.info(' Throughput(ops/sec): %.2f' % (thruput))
         # new_total = cp.dumps(total_time)
         # sckt.send(new_total);
-        logging.info(' Throughput(ops/sec): %.2f' % (thruput))
-        # logging.info("Finsh sending requests")
+        logging.info("Finsh sending requests")
 
 
 # def run_bench(bname, num_requests, cloudburst, kvs, sckt, create=False):
