@@ -24,7 +24,8 @@ from cloudburst.server.benchmarks import utils
 logging.basicConfig(filename='log_trigger.txt', level=logging.INFO,
                     format='%(asctime)s %(message)s')
 
-NUM_THREADS = 4
+NUM_THREADS = 8
+BENCH_PORT = 3000
 
 ips = []
 with open('bench_ips.txt', 'r') as f:
@@ -39,13 +40,13 @@ num_requests = int(splits[1])
 ctx = zmq.Context()
 
 recv_socket = ctx.socket(zmq.PULL)
-recv_socket.bind('tcp://*:3000')
+recv_socket.bind('tcp://*:' + str(BENCH_PORT))
 
 sent_msgs = 0
 
 if 'create' in msg:
     sckt = ctx.socket(zmq.PUSH)
-    sckt.connect('tcp://' + ips[0] + ':3000')
+    sckt.connect('tcp://' + ips[0] + ':' + BENCH_PORT)
 
     sckt.send_string(msg)
     sent_msgs += 1
@@ -54,9 +55,9 @@ else:
     for ip in ips:
         for tid in range(NUM_THREADS):
             sckt = ctx.socket(zmq.PUSH)
-            print(str(3000 + tid))
-            print('tcp://' + ip + ':' + str(3000 + tid))
-            sckt.connect('tcp://' + ip + ':' + str(3000 + tid))
+            print(str(BENCH_PORT + tid))
+            print('tcp://' + ip + ':' + str(BENCH_PORT + tid))
+            sckt.connect('tcp://' + ip + ':' + str(BENCH_PORT + tid))
             # sckt.bind('tcp://*:' + str(3005 + tid))
             # receive = ctx.socket(zmq.PULL)
             # receive.connect('tcp://localhost:' + str(3005 + tid))

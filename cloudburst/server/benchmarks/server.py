@@ -52,7 +52,7 @@ def benchmark(ip, routing_address, tid):
 
     benchmark_start_socket = ctx.socket(zmq.PULL)
     benchmark_start_socket.bind('tcp://*:' + str(BENCHMARK_START_PORT + tid))
-    print(str(BENCHMARK_START_PORT + tid))
+    logging.info(str(BENCHMARK_START_PORT + tid))
     # kvs = cloudburst.kvs_client
     
     while True:
@@ -67,11 +67,10 @@ def benchmark(ip, routing_address, tid):
         sckt.connect('tcp://' + resp_addr + ':3000')
         sample = np.random.zipf(2, num_requests)
         total_time = []
-        start = time.time()
         for i in range(num_requests):
             key = str(sample[i]).zfill(8)
             # key = str(sample[i])
-            arr = str_generator(256*1024)
+            arr = str_generator(256000)
             lattice = LWWPairLattice(0, arr.encode())
             logging.info("Start anna kvs")
             start = time.time()
@@ -83,8 +82,8 @@ def benchmark(ip, routing_address, tid):
                 logging.info('GET Error: %s' % (get_res))
             logging.info("Finish anna kvs")
             total_time += [end - start]
-        time = sum(total_time)
-        thruput = num_requests * 2 / sum(epoch_total)
+        total = sum(total_time)
+        thruput = num_requests * 2 / total
         logging.info(' Throughput(ops/sec): %.2f' % (thruput))
         # new_total = cp.dumps(total_time)
         # sckt.send(new_total);
