@@ -58,13 +58,13 @@ def benchmark(ip, routing_address, tid):
     while True:
         msg = benchmark_start_socket.recv_string()
         logging.info('Receive message: %s' % (msg))
-        splits = msg.split(':')
+        # splits = msg.split(':')
 
-        resp_addr = splits[0]
-        num_requests = int(splits[1])
+        # resp_addr = splits[0]
+        num_requests = int(msg)
 
-        sckt = ctx.socket(zmq.PUSH)
-        sckt.connect('tcp://' + resp_addr + ':3000')
+        # sckt = ctx.socket(zmq.PUSH)
+        # sckt.connect('tcp://' + resp_addr + ':3000')
         sample = np.random.zipf(2, num_requests)
         total_time = []
         for i in range(num_requests):

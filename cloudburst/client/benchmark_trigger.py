@@ -35,8 +35,8 @@ with open('bench_ips.txt', 'r') as f:
         line = f.readline()
 
 msg = sys.argv[1]
-splits = msg.split(':')
-num_requests = int(splits[1])
+# splits = msg.split(':')
+num_requests = int(msg)
 ctx = zmq.Context()
 
 recv_socket = ctx.socket(zmq.PULL)
