@@ -72,7 +72,6 @@ def benchmark(ip, routing_address, tid):
             # key = str(sample[i])
             arr = str_generator(256000)
             lattice = LWWPairLattice(0, arr.encode())
-            logging.info("Start anna kvs")
             start = time.time()
             put_res = kvs.put(key, lattice)
             get_res = kvs.get(key)
@@ -80,14 +79,13 @@ def benchmark(ip, routing_address, tid):
             if put_res[key] != 0:
                 logging.info('PUT Error: %d' % (put_res[key]))
                 logging.info('GET Error: %s' % (get_res))
-            logging.info("Finish anna kvs")
             total_time += [end - start]
         total = sum(total_time)
         thruput = num_requests * 2 / total
         logging.info(' Throughput(ops/sec): %.2f' % (thruput))
         # new_total = cp.dumps(total_time)
         # sckt.send(new_total);
-        logging.info("Finsh sending requests")
+        # logging.info("Finsh sending requests")
 
 
 # def run_bench(bname, num_requests, cloudburst, kvs, sckt, create=False):
