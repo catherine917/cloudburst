@@ -84,7 +84,7 @@ def benchmark(ip, routing_address, tid):
             logging.info("Finish anna kvs")
             total_time += [end - start]
         time = sum(total_time)
-        thruput = num_requests * 2 / sum(epoch_total)
+        thruput = num_requests * 2 / time
         logging.info(' Throughput(ops/sec): %.2f' % (thruput))
         # new_total = cp.dumps(total_time)
         # sckt.send(new_total);
