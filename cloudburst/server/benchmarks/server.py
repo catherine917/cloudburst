@@ -52,28 +52,26 @@ def benchmark(ip, routing_address, tid):
 
     benchmark_start_socket = ctx.socket(zmq.PULL)
     benchmark_start_socket.bind('tcp://*:' + str(BENCHMARK_START_PORT + tid))
-    print(str(BENCHMARK_START_PORT + tid))
+    logging.info(str(BENCHMARK_START_PORT + tid))
     # kvs = cloudburst.kvs_client
     
     while True:
         msg = benchmark_start_socket.recv_string()
         logging.info('Receive message: %s' % (msg))
-        splits = msg.split(':')
+        # splits = msg.split(':')
 
-        resp_addr = splits[0]
-        num_requests = int(splits[1])
+        # resp_addr = splits[0]
+        num_requests = int(msg)
 
-        sckt = ctx.socket(zmq.PUSH)
-        sckt.connect('tcp://' + resp_addr + ':3000')
+        # sckt = ctx.socket(zmq.PUSH)
+        # sckt.connect('tcp://' + resp_addr + ':3000')
         sample = np.random.zipf(2, num_requests)
         total_time = []
-        start = time.time()
         for i in range(num_requests):
             key = str(sample[i]).zfill(8)
             # key = str(sample[i])
-            arr = str_generator(256*1024)
+            arr = str_generator(256000)
             lattice = LWWPairLattice(0, arr.encode())
-            logging.info("Start anna kvs")
             start = time.time()
             put_res = kvs.put(key, lattice)
             get_res = kvs.get(key)
@@ -81,14 +79,13 @@ def benchmark(ip, routing_address, tid):
             if put_res[key] != 0:
                 logging.info('PUT Error: %d' % (put_res[key]))
                 logging.info('GET Error: %s' % (get_res))
-            logging.info("Finish anna kvs")
             total_time += [end - start]
-        time = sum(total_time)
-        thruput = num_requests * 2 / time
+        total = sum(total_time)
+        thruput = num_requests * 2 / total
         logging.info(' Throughput(ops/sec): %.2f' % (thruput))
         # new_total = cp.dumps(total_time)
         # sckt.send(new_total);
-        logging.info("Finsh sending requests")
+        # logging.info("Finsh sending requests")
 
 
 # def run_bench(bname, num_requests, cloudburst, kvs, sckt, create=False):
